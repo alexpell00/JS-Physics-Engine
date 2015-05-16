@@ -6,11 +6,22 @@
     	<script type="text/javascript" src="sprite.js"></script>
     	<script type="text/javascript" src="engine.js"></script>
     	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-	    <canvas id="test-canvas" style=""></canvas>
+	    
+	    <canvas id="test-balls-bounce" style="border-style: solid;"></canvas>
+	    <canvas id="test-shm" style="border-style: solid;"></canvas>
+		<canvas id="test-ball-mech" style="border-style: solid;"></canvas>
 
     	<script type="text/javascript">
     		$(function(){
-	    		var canvas = document.getElementById("test-canvas");
+    			var rand = function(max, min, is_int) {
+				  var max = ((max - 1) || 0) + 1,
+				    min = min || 0,
+				    gen = min + (max - min) * random();
+
+				  return (is_int) ? round(gen) : gen;
+				};
+
+	    		var canvas = document.getElementById("test-balls-bounce");
 				canvas.width = 500;
 				canvas.height = 500;
 
@@ -18,34 +29,81 @@
 					canvas: canvas
 				});
 
+				for (var i = 0; i < 300; i++){
+					var ball = sprite({
+					    canvas: canvas,
+					    width: 3,
+					    height: 3,
+					    gravity: false,
+					    acc: point(0,15),
+					    start: point(rand(canvas.width,0),rand(canvas.height,0)),
+					    vel: point(rand(20,-20),rand(20,-20)),
+					    COR: .9
+					});
+					engine.addObject(ball);
+				}
+				engine.start();
 
-				var ball = sprite({
-				    context: canvas.getContext("2d"),
-				    width: 100,
-				    height: 100,
-				    gravity: true,
-				    start: point(100,300),
-				    vel: point(0,-30)
+				//SHM
+				var canvasSHM = document.getElementById("test-shm");
+				canvasSHM.width = 500;
+				canvasSHM.height = 500;
+
+				var engineSHM = new PhysicsEngine({
+					canvas: canvasSHM
 				});
-				ball.render();
-				engine.addObject(ball);
-
-				var shm = OscillatingSprite({
-				    context: canvas.getContext("2d"),
-				    width: 100,
-				    height: 100,
+				var wave = OscillatingSprite({
+				    canvas: canvasSHM,
+				    width: 10,
+				    height: 10,
 				    start: point(100,100),
 				    max: point(50,50),
 				    freq: point(0,1),
 				    vel: point(10,0)
 				});
-				shm.render();
-				engine.addObject(shm);
+				engineSHM.addObject(wave);
 
-				engine.start();
-				console.log(engine);
+				var circle = OscillatingSprite({
+				    canvas: canvasSHM,
+				    width: 10,
+				    height: 10,
+				    start: point(250,250),
+				    max: point(50,50),
+				    freq: point(1,1),
+				    vel: point(0,0)
+				});
+				engineSHM.addObject(circle);
 
+				engineSHM.start();
 
+				//ball mechanics
+				var canvasBallMech = document.getElementById("test-ball-mech");
+				canvasBallMech.width = 500;
+				canvasBallMech.height = 500;
+
+				var engineBallMech = new PhysicsEngine({
+					canvas: canvasBallMech
+				});
+				var parabola = sprite({
+				    canvas: canvasBallMech,
+				    gravity: true,
+				    width: 10,
+				    height: 10,
+				    start: point(0,canvas.height-10),
+				    vel: point(40,-40)
+				});
+				engineBallMech.addObject(parabola);
+
+				var dropping = sprite({
+				    canvas: canvasBallMech,
+				    gravity: true,
+				    width: 10,
+				    height: 10,
+				    start: point(250,250),
+				    vel: point(0,-30)
+				});
+				engineBallMech.addObject(dropping);
+				engineBallMech.start();
 
 
 			});
