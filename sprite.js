@@ -2,7 +2,7 @@
 * @Author: Alex Pelletier
 * @Date:   2015-05-13 09:07:39
 * @Last Modified by:   Alex Pelletier
-* @Last Modified time: 2015-05-15 17:41:08
+* @Last Modified time: 2015-05-17 19:44:57
 */
 
 'use strict';
@@ -49,7 +49,7 @@ function sprite (options) {
       if (p.y > that.canvas.height-that.height || p.y < 0){
         that.vel.y *= that.COR;
       }else if(p.x < 0 || p.x > that.canvas.width-that.width){
-        that.vel.x *= that.COR;
+        that.vel.x *= -1;
       }else{
         that.time += that.timeModifier/that.fps;
       }

@@ -2,7 +2,7 @@
 * @Author: Alex Pelletier
 * @Date:   2015-05-13 09:07:55
 * @Last Modified by:   Alex Pelletier
-* @Last Modified time: 2015-05-15 17:37:15
+* @Last Modified time: 2015-05-16 17:01:38
 */
 
 'use strict';
@@ -19,7 +19,7 @@ function PhysicsEngine (options) {
     that.count = 0;
     that.canvas = options.canvas;
     that.fps = 100;
-    that.timeModifier = 4;
+    that.timeModifier = 2;
     that.meterToPixel = 2;
 
     that.addObject = function(obj){
@@ -56,7 +56,7 @@ function PhysicsEngine (options) {
 			}
     		that.count += 1;
     	}
-    	setTimeout(function(){that.tic(interval+1);}, 1000/that.fps);
+    	setTimeout(function(){that.tic(interval+1);}, (1000/that.timeModifier)/that.fps);
     };
 
     that.newPoint = function(obj){ //get new position of obj
