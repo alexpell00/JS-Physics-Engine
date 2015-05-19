@@ -2,7 +2,7 @@
 * @Author: Alex Pelletier
 * @Date:   2015-05-13 09:07:55
 * @Last Modified by:   Alex Pelletier
-* @Last Modified time: 2015-05-16 17:01:38
+* @Last Modified time: 2015-05-17 23:07:30
 */
 
 'use strict';
@@ -18,9 +18,11 @@ function PhysicsEngine (options) {
     that.isRunning = false;
     that.count = 0;
     that.canvas = options.canvas;
-    that.fps = 100;
+    that.fps = 20;
     that.timeModifier = 2;
     that.meterToPixel = 2;
+    that.shouldClearCanvas = ("shouldClearCanvas" in options) ? options.shouldClearCanvas : true;
+    that.onNewFrame = ("onNewFrame" in options) ? options.onNewFrame : function(){};
 
     that.addObject = function(obj){
     	that.objects.push(obj);
@@ -38,8 +40,11 @@ function PhysicsEngine (options) {
     };
 
     that.tic = function(interval){ //runs every frame to update
+    	that.onNewFrame(that);
     	if (that.isRunning == true && that.count < 100000){
-    		that.canvas.getContext("2d").clearRect ( 0 , 0 , that.canvas.width, that.canvas.height );
+    		if (that.shouldClearCanvas){
+	    		that.canvas.getContext("2d").clearRect ( 0 , 0 , that.canvas.width, that.canvas.height );
+	    	}	
     		for (var i = 0; i < that.objects.length; i++){
     			var obj = that.objects[i];
     			obj.point = that.newPoint(obj);
@@ -50,6 +55,8 @@ function PhysicsEngine (options) {
 			    for (var j = i + 1; j < that.objects.length; j++){  
 			        if (that.isColliding(that.objects[i],that.objects[j])){
 			            console.log("HIT");
+			            that.objects[i].onCollision();
+			            that.objects[j].onCollision();
 			            that.resolveCollision(that.objects[i],that.objects[j]);
 			        }
 			    }

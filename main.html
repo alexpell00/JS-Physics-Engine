@@ -26,7 +26,8 @@
 				canvas.height = 500;
 
 				var engine = new PhysicsEngine({
-					canvas: canvas
+					canvas: canvas,
+					shouldClearCanvas: true
 				});
 
 				for (var i = 0; i < 300; i++){
@@ -35,10 +36,12 @@
 					    width: 3,
 					    height: 3,
 					    gravity: false,
-					    acc: point(0,15),
 					    start: point(rand(canvas.width,0),rand(canvas.height,0)),
-					    vel: point(rand(20,-20),rand(20,-20)),
-					    COR: .9
+					    vel: point(rand(30,-30),rand(30,-30)),
+					    COR: 1,
+					    color: '#' + (function co(lor){   return (lor +=
+							  [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
+							  && (lor.length == 6) ?  lor : co(lor); })(''),
 					});
 					engine.addObject(ball);
 				}
@@ -50,30 +53,36 @@
 				canvasSHM.height = 500;
 
 				var engineSHM = new PhysicsEngine({
-					canvas: canvasSHM
+					canvas: canvasSHM,
+					shouldClearCanvas: true
 				});
 				var wave = OscillatingSprite({
 				    canvas: canvasSHM,
 				    width: 10,
 				    height: 10,
-				    start: point(100,100),
+				    start: point(100,80),
 				    max: point(50,50),
 				    freq: point(0,1),
-				    vel: point(10,0)
+				    vel: point(10,0),
 				});
 				engineSHM.addObject(wave);
 
-				var circle = OscillatingSprite({
-				    canvas: canvasSHM,
-				    width: 10,
-				    height: 10,
-				    start: point(250,250),
-				    max: point(50,50),
-				    freq: point(1,1),
-				    vel: point(0,0)
-				});
-				engineSHM.addObject(circle);
-
+				points = [point(250,300)];
+				for (var i = 0; i < points.length; i ++){
+					var circle = OscillatingSprite({
+					    canvas: canvasSHM,
+					    width: 10,
+					    height: 10,
+					    start: points[i],
+					    max: point(100,100),
+					    freq: point(1,1),
+					    vel: point(0,0),
+					    onRender: function(that){
+							that.width = rand(10,9);
+					    }
+					});
+					engineSHM.addObject(circle);
+				}
 				engineSHM.start();
 
 				//ball mechanics
@@ -82,15 +91,16 @@
 				canvasBallMech.height = 500;
 
 				var engineBallMech = new PhysicsEngine({
-					canvas: canvasBallMech
+					canvas: canvasBallMech,
 				});
 				var parabola = sprite({
 				    canvas: canvasBallMech,
 				    gravity: true,
 				    width: 10,
 				    height: 10,
+				    color: "red",
 				    start: point(0,canvas.height-10),
-				    vel: point(40,-40)
+				    vel: point(37,-40)
 				});
 				engineBallMech.addObject(parabola);
 
@@ -99,7 +109,8 @@
 				    gravity: true,
 				    width: 10,
 				    height: 10,
-				    start: point(250,250),
+				    color: "blue",
+				    start: point(250,245),
 				    vel: point(0,-30)
 				});
 				engineBallMech.addObject(dropping);
